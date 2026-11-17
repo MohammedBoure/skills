@@ -9,6 +9,7 @@ Structure create/edit/settings dialogs as a clean three-zone vertical layout (`c
    - Right: Subtle close button (`×`, bound to `Esc`).
 2. **Scrollable Form Body (`QScrollArea`, `widgetResizable=True`, padding `20px`)**:
    - Use a responsive 2-column `QGridLayout` (`16px` horizontal gap, `14px` vertical gap) for medium/large forms, or a single-column `QVBoxLayout` for compact dialogs (`< 4` fields).
+   - Always call `grid.setColumnStretch(0, 1)` and `grid.setColumnStretch(1, 1)` on 2-column forms so `QComboBox` / `QSpinBox` columns never shrink to 25% width next to `QLineEdit` columns, and size the dialog proportionally to its content (`420px–520px` height) to avoid dead vertical whitespace.
    - Place `FieldLabel` (`12px` SemiBold) **above** each input (`4px` vertical gap) so labels never clip across languages or RTL/LTR switches.
    - Span full width (`columnSpan=2`) for multi-line text areas, file pickers, or wide descriptions.
 3. **Sticky Modal Footer (Subtle secondary surface, top `1px` border, padding `12px 20px`)**:

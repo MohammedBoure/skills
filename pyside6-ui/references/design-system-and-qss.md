@@ -3,6 +3,9 @@
 ## 1. Centralized Theme & QSS Strategy
 
 - **Single Source of Truth**: Keep color tokens and QSS rules in one centralized theme module (or load `./assets/base-theme.qss` when starting a brand-new project) and apply them once at the `QApplication` level using `app.setStyle("Fusion")` for consistent cross-platform rendering.
+- **OS Color Scheme & Palette Isolation**: On Windows 11 / macOS with OS Dark Mode active, Qt 6.5+ injects a dark system `QPalette` (dark surfaces, white text) that causes invisible white text in `QTableView` and dark backgrounds in `QDialog`, `QScrollArea` bodies, `QTabBar`, and `QSplitter::handle` under a Light QSS theme. Always:
+  1. Call `app.styleHints().setColorScheme(Qt.ColorScheme.Light)` (or `.Dark` matching the active theme, guarded with `hasattr(app.styleHints(), "setColorScheme")`).
+  2. Explicitly style `color` and `background-color` on `QDialog`, `QMessageBox`, `QMenu`, `QTableView`/`QTableWidget` (and `::item`), `QTabWidget::pane`, `QTabBar::tab`, `QSplitter::handle`, and `QComboBox QAbstractItemView`.
 - **Light & Dark Theme Readiness**: Define semantic color tokens (`canvas`, `surface`, `subtle`, `border`, `text_primary`, `text_secondary`, `accent`) in a dictionary or dataclass and generate/swap the QSS from those tokens rather than hardcoding hex values inside widget classes.
 - **Prevent QSS Selector Leakage**:
   - Never apply broad descendant rules like `QFrame { border: 1px solid ...; }` on container widgets, or they will leak into child dialogs, popups, and combo-box dropdowns.
@@ -13,6 +16,7 @@
   widget.style().polish(widget)
   ```
 - **HiDPI & Crisp Icons**: Enable Qt's default HiDPI scaling (built-in in PySide6) and prefer SVG/vector icons rendered at `devicePixelRatio` over fixed-size raster bitmaps.
+- **Custom Vector Indicators for Styled Controls (`QCheckBox`, `QComboBox`, `QSpinBox`)**: Styling `border` or `background-color` on these widgets in QSS disables native OS indicator painting—producing solid colored checkboxes without a checkmark, crude fallback triangles, and clipped black separator lines. Always provide crisp SVG `image: url(...)` assets for `QCheckBox::indicator:checked`, `QComboBox::down-arrow`, `QSpinBox::up-arrow`, and `QSpinBox::down-arrow`, and set `border: none; background: transparent;` on `::drop-down`, `::up-button`, and `::down-button`.
 - **Slim Modern Scrollbars**: Style vertical/horizontal `QScrollBar` handles (`8px` wide/tall, rounded `4px`, subtle handle, zero arrow buttons) so dense tables, trees, and lists stay uncluttered.
 
 ## 2. Reusable Structural Primitives

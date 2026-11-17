@@ -19,10 +19,16 @@ Choose the `QMainWindow` shell pattern that fits the application's workflow comp
 - Use `QSplitter` (`childrenCollapsible=False` unless intentional) for master-detail lists, side-by-side editors/previews, or log panes.
 - Set sensible `setSizes([...])` ratios and minimum widths on panes so neither side collapses into an unreadable sliver.
 
-## 3. Window & Layout State Persistence (`QSettings`)
+## 3. Responsive Multi-Screen Sizing & `QSettings` Persistence
 
-- Persist and restore `QMainWindow.saveGeometry()` / `restoreGeometry()`, `saveState()` / `restoreState()` (for docks/toolbars), and `QSplitter.saveState()` / `restoreState()` using `QSettings` on close and startup.
-- Always guard `restoreGeometry()` against disconnected/changed monitor setups so windows never open off-screen.
+- **Screen-Aware Initial Sizing**: Never hardcode oversized `resize(...)` or large `setMinimumSize(...)` values that overflow `1280×720` / `1366×768` laptops or `125%–150%` HiDPI displays. Compute initial dimensions from `QGuiApplication.primaryScreen().availableGeometry()` (e.g., `min(1220, int(avail.width() * 0.86))` × `min(760, int(avail.height() * 0.86))`), and keep `minimumSize` modest (`~760×520` for main windows, `~400×320` for dialogs) so OS half-screen snapping works cleanly.
+- **Responsive Breakpoints & Scrollable Pages**:
+  - Override `resizeEvent()` on `QMainWindow` to auto-collapse the navigation sidebar (`~58px` icon rail) when window width drops below `1020px`, reclaiming horizontal space for tables and split views.
+  - Wrap dense dashboards, settings pages, and multi-card layouts in a borderless `QScrollArea` (`widgetResizable=True`) so short viewports never clip controls.
+  - Never call `setFixedWidth()` on content panels or cards—rely on stretch factors and `QSplitter` with reasonable `minimumWidth` (`260px–320px`).
+- **Window & Layout State Persistence (`QSettings`)**:
+  - Persist and restore `QMainWindow.saveGeometry()` / `restoreGeometry()`, `saveState()` / `restoreState()` (for docks/toolbars), and `QSplitter.saveState()` / `restoreState()` using `QSettings` on close and startup.
+  - Always guard `restoreGeometry()` against disconnected/changed monitor setups and clamp window bounds to `availableGeometry()` so windows never open off-screen or larger than the current display.
 
 ## 4. Canonical Action Placement (Zero Duplication)
 

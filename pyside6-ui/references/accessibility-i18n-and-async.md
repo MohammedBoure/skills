@@ -26,6 +26,7 @@
 - **RTL Layout Discipline (`Qt.RightToLeft`)**:
   - Use `QBoxLayout`, `QGridLayout`, and `QFormLayout` rather than manual `move()`/`setGeometry()` coordinates so Qt mirrors layouts automatically when `app.setLayoutDirection(Qt.RightToLeft)` is active.
   - Anchor overlay toasts and directional icons relative to `layoutDirection()` rather than hardcoding left/right offsets.
+  - **SpinBox / ComboBox Arrow Clearance in RTL**: Avoid large symmetric horizontal `padding` (e.g., `padding: 0 10px`) on `QSpinBox` and `QDoubleSpinBox` under `Qt.RightToLeft` with native Windows styling, as the up/down arrows will overlap the numeric text; pair `app.setStyle("Fusion")` with compact padding (`padding: 2px 6px`).
 
 ## 4. Non-Blocking Async & Threading (Doherty Threshold)
 
