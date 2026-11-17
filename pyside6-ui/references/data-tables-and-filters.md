@@ -6,6 +6,7 @@ Place search and filter controls inside the top area of the data view's `CardFra
 
 - **Debounced Search Input**:
   - Configure `QLineEdit` with a clear, specific placeholder (`"Search by name, ID, or tag..."`) and `setClearButtonEnabled(True)`.
+  - Prevent placeholder truncation when pairing a search `QLineEdit` with `addStretch(1)`: always set an explicit `setMinimumWidth(...)` (e.g., `240px–280px`, or `QFontMetrics` placeholder width + `56px` padding) or assign a layout stretch (`addWidget(search, 1)` with `setMaximumWidth(380)`), because Qt's default `QLineEdit` width collapses to ~`130px` beside a stretch spacer.
   - Use a single-shot `QTimer` (`250ms`) on `textChanged` so proxy filtering or async queries run smoothly after typing pauses.
   - Connect `returnPressed` to cancel the timer and filter immediately; handle `Qt.Key_Escape` to clear the search text and restore focus.
 - **Segmented Filter Pills**:

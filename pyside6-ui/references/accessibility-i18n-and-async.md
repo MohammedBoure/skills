@@ -22,7 +22,7 @@
 ## 3. Internationalization (i18n) & Right-to-Left (RTL) Support
 
 - **Translation Readiness**: Wrap user-facing strings in `self.tr(...)` or `QCoreApplication.translate(...)`. Avoid concatenating translated fragments (`"Delete " + name`); use format placeholders (`self.tr("Delete {0}?").format(name)`).
-- **Flexible Sizing for Translated Text**: Never hardcode tight pixel widths on buttons or labels—use `min-width` + padding and `QSizePolicy.Preferred` / `MinimumExpanding` so longer translations (e.g., German, French, Arabic) never clip.
+- **Flexible Sizing for Translated Text**: Never hardcode tight pixel widths on buttons or labels—use `min-width` + padding and `QSizePolicy.Preferred` / `MinimumExpanding` so longer translations (e.g., German, French, Arabic) never clip. For `QLineEdit` / `QComboBox` inputs placed next to `addStretch(1)` in toolbars, always set `setMinimumWidth(240)` (or give the input a stretch factor) so placeholders and labels are never crushed to ~`130px`.
 - **RTL Layout Discipline (`Qt.RightToLeft`)**:
   - Use `QBoxLayout`, `QGridLayout`, and `QFormLayout` rather than manual `move()`/`setGeometry()` coordinates so Qt mirrors layouts automatically when `app.setLayoutDirection(Qt.RightToLeft)` is active.
   - Anchor overlay toasts and directional icons relative to `layoutDirection()` rather than hardcoding left/right offsets.
