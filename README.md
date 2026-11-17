@@ -1,6 +1,6 @@
-# `.agents/skills` Directory
+# Skills Repository
 
-Contains project-scoped skills for **StockLamEM**.
+Contains reusable AI agent skills.
 
 ## Folders
-- **`desktop-erp-ux/`**: Desktop ERP & POS User Experience (UX) skill tailored for StockLam's PySide6 screens.
+- **`pyside6-erp-ui/`**: Universal, domain-agnostic PySide6 / Qt for Python UI/UX architecture and design system skill for desktop applications.
