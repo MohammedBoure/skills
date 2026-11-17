@@ -1,4 +1,4 @@
-# Reference Modules Index (`pyside6-erp-ui`)
+# Reference Modules Index (`pyside6-ui`)
 
 Load only the module(s) relevant to the active PySide6 screen or component:
 

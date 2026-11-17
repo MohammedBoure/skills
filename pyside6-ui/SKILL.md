@@ -1,5 +1,5 @@
 ---
-name: pyside6-erp-ui
+name: pyside6-ui
 description: "Universal PySide6 / Qt for Python UI/UX architecture and design system skill for any desktop application. Always use when designing, building, refactoring, styling, or reviewing PySide6 windows, navigation shells, QSS themes, dashboards, data tables, search/filter bars, CRUD forms, modal dialogs, async responsiveness, RTL/i18n, or keyboard workflows."
 ---
 
@@ -64,6 +64,7 @@ Design and build clean, responsive, human-centered desktop interfaces in **PySid
 6. **Explain Disabled States & Validate Inline**: Every `setEnabled(False)` call MUST include `setToolTip(...)` explaining why it is disabled. Validate inputs inline with helper error labels—never interrupt typing with `QMessageBox`.
 7. **One Canonical Location Per Action**: Never duplicate the same action in both a top bar and a bottom footer. Place primary page CTAs top-right in `PageHeader`, and primary form/dialog CTAs bottom-right in the modal footer.
 8. **Keyboard-First & Non-Blocking Feedback**: Set initial focus in `showEvent()`, wire `setTabOrder()`, support `Enter`/`Esc`, and use non-blocking overlay toasts or status bars for routine confirmations—reserving modal dialogs for destructive confirmations.
+9. **Restrained, Content-Fitted Status Badges**: Never stretch table status pills to a wide uniform fixed width or flood every healthy row with heavy saturated badges. Fit pill width dynamically to `QFontMetrics.horizontalAdvance(text) + padding`, keep routine healthy states visually quiet (e.g., subtle `7px` status dot + crisp text) so warnings/errors pop immediately, and preserve row selection and bottom hairline dividers inside custom `QStyledItemDelegate.paint()` overrides.
 
 ## 5. Pre-Flight Quality Gate
 
@@ -71,6 +72,7 @@ Before finalizing any PySide6 UI implementation, verify:
 - Does every view have clear visual hierarchy (`PageHeader` or structured workspace bar) with no orphaned floating controls?
 - Do all interactive controls share uniform heights (`>= 36px`), clear hover/focus states, and sufficient color contrast?
 - Are numeric/tabular columns right-aligned and formatted according to the app's locale?
+- Are table status badges sized to their text, visually calm on healthy rows, and aligned seamlessly with row selection and dividers?
 - Do empty, zero-match, and loading states use a dedicated `QStackedWidget` state instead of blank whitespace?
 - Does every disabled control explain itself via `setToolTip()`?
 - Are long-running tasks offloaded from the UI thread so the window never freezes?

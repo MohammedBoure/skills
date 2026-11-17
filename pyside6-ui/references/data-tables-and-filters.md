@@ -26,6 +26,11 @@ Place search and filter controls inside the top area of the data view's `CardFra
   - Format numbers, dates, and currencies using `QLocale` or the project's configured locale rather than hardcoding a single region's format.
 - **Clean Row Interaction**:
   - Avoid embedding heavy interactive widgets (`QComboBox`, multi-button toolbars) in every row of large tables; prefer `QStyledItemDelegate` for badges, progress bars, and custom cells.
+  - When embedding compact action buttons inside cells (`+`, `-`, `Trash`), assign a dedicated compact `objectName` (e.g., `CellIconBtn` with `padding: 0; min-height: 24px;`) so `36px` toolbar button padding does not crush button labels.
+  - **Status Badge Design Discipline (`StatusBadgeDelegate`)**:
+    - **Content-Fitted Pill Width**: Compute width dynamically via `min(option.rect.width() - 12, QFontMetrics(font).horizontalAdvance(text) + 22)`—never draw wide fixed-width capsules that leave short words (`Out`, `Paid`, `نفد`) swimming in empty space.
+    - **Signal-Over-Noise (Quiet Healthy States)**: Avoid turning a status column into a loud wall of bright green pills. Render routine/healthy states (`In Stock`, `Paid`, `متوفر`, `مدفوعة`) with a subtle `7px` semantic dot + calm text, reserving soft tinted pills for warnings and critical alerts (`Low Stock`, `Expired`, `Out of Stock`).
+    - **Selection & Divider Continuity**: In `paint()`, draw the row's normal/alternating/selected background across `option.rect` *and* preserve the bottom `1px` row hairline divider so the status cell blends smoothly with sibling columns instead of looking like an isolated sticker.
   - Bind `doubleClicked` (and `Enter` key) to open the primary detail/edit view, and provide a clean `QMenu` context menu (`customContextMenuRequested`) for secondary row actions.
   - If a row action button is rendered and disabled, set a `setToolTip(...)` explaining why.
 

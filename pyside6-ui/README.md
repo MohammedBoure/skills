@@ -1,4 +1,4 @@
-# `pyside6-erp-ui` Skill Directory
+# `pyside6-ui` Skill Directory
 
 Universal, domain-agnostic UI/UX architecture and design system guidelines for **any PySide6 / Qt for Python desktop application** (business tools, dashboards, developer utilities, data managers, editors, scientific/monitoring apps, or enterprise software). Built around timeless UX laws, Model/View performance, and progressive disclosure.
 
