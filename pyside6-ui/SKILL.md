@@ -58,21 +58,22 @@ Design and build clean, responsive, human-centered desktop interfaces in **PySid
 
 1. **Adapt to Existing Codebase First**: Reuse existing theme constants, base widgets, and helpers before introducing new abstractions.
 2. **Clean Spatial Grouping**: Use `QFrame` cards (`1px` hairline border, subtle surface contrast) or `QSplitter` panes instead of heavy nested `QGroupBox` borders.
-3. **Model/View for Tabular & Tree Data**: Use `QTableView` / `QTreeView` with `QAbstractItemModel` (`QAbstractTableModel`), `QSortFilterProxyModel`, and `QStyledItemDelegate`. Avoid populating `QTableWidget` cells with heavy nested widgets.
-4. **Semantic QSS Over Inline Spaghetti**: Style via `setObjectName(...)` roles (`PrimaryButton`, `DangerButton`, `Card`, `PageTitle`) and dynamic properties (`[invalid="true"]` with `unpolish()`/`polish()`) rather than scattering raw `setStyleSheet(...)` strings.
-5. **Responsive Layouts (Zero Fixed Container Sizes)**: Never call `setFixedSize()` on windows, cards, or tables. Rely on layouts, stretch factors, `QSizePolicy`, and `QScrollArea` so UIs scale cleanly across resolutions, HiDPI displays, and translated text lengths.
-6. **Explain Disabled States & Validate Inline**: Every `setEnabled(False)` call MUST include `setToolTip(...)` explaining why it is disabled. Validate inputs inline with helper error labels—never interrupt typing with `QMessageBox`.
-7. **One Canonical Location Per Action**: Never duplicate the same action in both a top bar and a bottom footer. Place primary page CTAs top-right in `PageHeader`, and primary form/dialog CTAs bottom-right in the modal footer.
+3. **Model/View & Clean Cell Editing**: Use `QTableView` / `QTreeView` with `QAbstractItemModel` (`QAbstractTableModel`), `QSortFilterProxyModel`, and `QStyledItemDelegate`. Avoid populating `QTableWidget` cells with permanent per-row `QComboBox`, `QLineEdit`, or `QSpinBox` widgets—render clean locale-formatted text and open an editor only on click/double-click (`QStyledItemDelegate`), while supporting direct keyboard numeric entry for quantities.
+4. **Semantic QSS & Specificity Isolation**: Style via `setObjectName(...)` roles (`PrimaryButton`, `DangerButton`, `Card`, `PageTitle`) and dynamic properties (`[invalid="true"]` with `unpolish()`/`polish()`) rather than scattering raw `setStyleSheet(...)` strings. Always use `#ObjectName` selectors on embedded cell/toolbar widgets so app-level descendant rules (e.g., `QTableWidget QLineEdit`, `QTableWidget::item { padding }`) cannot crush or clip them.
+5. **Responsive Layouts & Pane-Scoped Toolbars**: Never call `setFixedSize()` on windows, cards, or tables. Rely on layouts, stretch factors, `QSizePolicy`, and `QScrollArea`. In `QSplitter` multi-pane layouts, keep each pane's search/filter toolbar inside the pane it controls rather than spanning full-width above unrelated sibling panes.
+6. **Explain Disabled States & Validate Inline**: Every `setEnabled(False)` call MUST include `setToolTip(...)` explaining why it is disabled. Validate inputs inline with helper error labels—never interrupt typing with `QMessageBox` or chain sequential modal popups (`Dialog A -> Dialog B`) for a single submit action.
+7. **One Canonical Action & Button Hierarchy**: Never duplicate the same action across parent tab corners and child toolbars, or top bars and footers. Reserve **one** filled Primary CTA per panel strictly for the main commit/create action (never for `Refresh` / `Reset`), keep secondary/utility actions in neutral slate (max 1–2 outlined accents), and avoid stacking 3–4 competing mode buttons or orphan full-width bars.
 8. **Keyboard-First & Non-Blocking Feedback**: Set initial focus in `showEvent()`, wire `setTabOrder()`, support `Enter`/`Esc`, and use non-blocking overlay toasts or status bars for routine confirmations—reserving modal dialogs for destructive confirmations.
 9. **Restrained, Content-Fitted Status Badges**: Never stretch table status pills to a wide uniform fixed width or flood every healthy row with heavy saturated badges. Fit pill width dynamically to `QFontMetrics.horizontalAdvance(text) + padding`, keep routine healthy states visually quiet (e.g., subtle `7px` status dot + crisp text) so warnings/errors pop immediately, and preserve row selection and bottom hairline dividers inside custom `QStyledItemDelegate.paint()` overrides.
 
 ## 5. Pre-Flight Quality Gate
 
 Before finalizing any PySide6 UI implementation, verify:
-- Does every view have clear visual hierarchy (`PageHeader` or structured workspace bar) with no orphaned floating controls?
+- Does every view have clear visual hierarchy (`PageHeader` or structured workspace bar) with at most one filled Primary commit CTA, neutral utility buttons (including `Refresh`), and no duplicate actions across tab corners and child toolbars?
 - Do all interactive controls share uniform heights (`>= 36px`), clear hover/focus states, and sufficient color contrast?
-- Are numeric/tabular columns right-aligned and formatted according to the app's locale?
+- Are numeric/monetary columns consistently locale-formatted and right-aligned across both display and edit cells, with no permanent per-row `QComboBox`/`QLineEdit` clutter?
 - Are table status badges sized to their text, visually calm on healthy rows, and aligned seamlessly with row selection and dividers?
-- Do empty, zero-match, and loading states use a dedicated `QStackedWidget` state instead of blank whitespace?
+- Do empty, sparse (1–3 row), zero-match, and loading states avoid dead whitespace voids that push summary totals or primary CTAs far away from the data?
+- Are active session/target contexts (e.g., selected client or mode) visible inline before submission without chaining multiple modal dialogs?
 - Does every disabled control explain itself via `setToolTip()`?
 - Are long-running tasks offloaded from the UI thread so the window never freezes?

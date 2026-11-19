@@ -31,8 +31,9 @@ For inspecting records or properties without losing list context:
 - Use a horizontal `QSplitter` (`childrenCollapsible=False`) pairing the main view (`~65%`) with a `CardFrame` detail drawer (`~35%`, `min-width: 320px`, `max-width: 480px`).
 - Organize the drawer into: Header (Item title + `StatusBadge` + close `×`), compact key-value metadata grid, main content/preview area, and a bottom contextual action bar.
 
-## 4. Safe Destructive Confirmations & Non-Blocking Feedback
+## 4. Safe Destructive Confirmations, Inline Context & Non-Blocking Feedback
 
+- **No Chained Sequential Modal Dialogs**: Never force a user through two or more back-to-back modal popups on a single submit click (e.g., `SelectClientDialog -> ConfirmPaymentDialog`). Surface key session/order context (such as active client, delivery mode, or payment option) **inline** in the workspace panel before submission, or consolidate required fields into one clean three-zone confirmation dialog only when confirmation is genuinely needed.
 - **Destructive Actions**: Reserve modal confirmation dialogs (`QMessageBox` or custom 3-zone confirm dialog) strictly for irreversible/destructive actions (`Delete`, `Discard Changes`, `Reset`). Explicitly name the target item/count, style the destructive button with `DangerButton`, and keep `Cancel` focused by default.
 - **Overlay Toast Notifications**: Replace blocking `QMessageBox.information` popups for routine confirmations (`"Saved"`, `"Export complete"`, `"Filters reset"`) with a floating `ToastNotification` frame anchored to the bottom-right (or bottom-left in RTL) of the active window (`20px` margin), featuring a `4px` semantic accent bar, `150ms` fade-in, `3000ms` auto-dismiss, and click-to-dismiss.
 - **Progress Feedback**: For multi-step or long operations, show an inline progress bar (`QProgressBar`) with a `Cancel` button rather than freezing the window.

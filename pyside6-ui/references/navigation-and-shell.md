@@ -18,6 +18,8 @@ Choose the `QMainWindow` shell pattern that fits the application's workflow comp
 
 - Use `QSplitter` (`childrenCollapsible=False` unless intentional) for master-detail lists, side-by-side editors/previews, or log panes.
 - Set sensible `setSizes([...])` ratios and minimum widths on panes so neither side collapses into an unreadable sliver.
+- **Pane-Scoped Toolbars (Gestalt Proximity)**: Never place a pane-specific search/filter bar full-width across the top of a `QSplitter` where it spans visually above an unrelated sibling pane (e.g., a catalog search bar sitting above a cart panel). Mount each pane's search, filter, and utility buttons inside the pane they control.
+- **Sparse Table & Action Proximity (No Dead Whitespace Voids)**: In split views where a side table often holds only 1–3 rows (e.g., an active cart or selection list), do not let an oversized empty table body push the summary card and primary CTA 400px+ down to the bottom edge. Keep the table compact or proportional, display inline session/client context right above or below the list, and anchor totals/actions near the user's focus.
 
 ## 3. Responsive Multi-Screen Sizing & `QSettings` Persistence
 
@@ -32,8 +34,8 @@ Choose the `QMainWindow` shell pattern that fits the application's workflow comp
 
 ## 4. Canonical Action Placement (Zero Duplication)
 
-- **Top-Right (`PageHeader`)**: Primary view-level creation/global actions (`+ New`, `Import`, `Export`).
-- **Card / Table Toolbar**: Context-local search, filters, and view toggles.
+- **Top-Right (`PageHeader` or `QTabWidget::cornerWidget`)**: Primary view-level creation/global actions (`+ New`, `Import`, `Export`). If a global `Refresh` lives in a tab bar's corner widget, **never** place a second `Refresh` button inside the child tab's filter bar directly beneath it.
+- **Card / Table Toolbar**: Context-local search, filters, and view toggles scoped strictly to that table/pane.
 - **Detail Drawer / Inspector**: Contextual actions for the currently selected item (`Edit`, `Duplicate`, `Delete`).
 - **Modal Footer**: Dialog-level commit/cancel actions (`Cancel` on left/secondary, `Save` on far right).
 - **Status Bar (`QStatusBar`)**: Passive, transient system state (connection status, item count, background task progress, zoom level)—never critical errors.
